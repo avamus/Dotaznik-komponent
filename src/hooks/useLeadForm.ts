@@ -1,20 +1,5 @@
-// src/hooks/useLeadForm.ts
 import { useState } from 'react';
-
-interface FormState {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  campaignName: string;
-  targetingType: 'national' | 'state' | 'zipCode' | null;
-  selectedStates: string[];
-  selectedCities: string[];
-  zipCodes: string[];
-  leadsPerDay: number;
-  googleSheetUrl: string;
-  webhookUrl: string;
-}
+import { FormState, submitLeadForm } from '@/lib/api';
 
 interface ValidationError {
   field: string;
@@ -125,20 +110,11 @@ export const useLeadForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
     try {
-      const response = await fetch('/api/campaign', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formState),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
-      }
-
+      await submitLeadForm(formState);
       setFormState(initialFormState);
+      // You might want to add some success feedback here
     } catch (error) {
       setErrors([{ field: 'submit', message: 'Failed to submit form' }]);
     } finally {
