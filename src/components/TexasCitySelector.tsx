@@ -107,7 +107,7 @@ const TEXAS_CITIES: City[] = [
   { rank: 97, name: "Socorro" },
   { rank: 98, name: "Copperas Cove" },
   { rank: 99, name: "Forney" },
-  { rank: 100, name: "Hurst" }
+  { rank: 100, name: "Hurst" },
   { rank: 101, name: "Duncanville" },
   { rank: 102, name: "Seguin" },
   { rank: 103, name: "Mission Bend" },
@@ -207,7 +207,7 @@ const TEXAS_CITIES: City[] = [
   { rank: 197, name: "Buda" },
   { rank: 198, name: "Gatesville" },
   { rank: 199, name: "Highland Village" },
-  { rank: 200, name: "Humble" }
+  { rank: 200, name: "Humble" },
   { rank: 201, name: "Live Oak" },
   { rank: 202, name: "Mount Pleasant" },
   { rank: 203, name: "Rendon" },
@@ -307,7 +307,7 @@ const TEXAS_CITIES: City[] = [
   { rank: 297, name: "Pearsall" },
   { rank: 298, name: "Murillo" },
   { rank: 299, name: "Pecos" },
-  { rank: 300, name: "Lucas" }
+  { rank: 300, name: "Lucas" },
   { rank: 301, name: "Hondo" },
   { rank: 302, name: "Liberty" },
   { rank: 303, name: "Hillsboro" },
