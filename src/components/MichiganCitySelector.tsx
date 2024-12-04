@@ -251,7 +251,6 @@ const MICHIGAN_CITIES: City[] = [
   { rank: 241, name: "Brighton" },
   { rank: 242, name: "Menominee" },
   { rank: 243, name: "Mason" },
-  { rank: 244, name: "Mayfield township"
   { rank: 244, name: "Mayfield township" },
   { rank: 245, name: "Raisin township" },
   { rank: 246, name: "Hillsdale" },
