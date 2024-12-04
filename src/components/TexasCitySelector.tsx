@@ -257,7 +257,7 @@ const TEXAS_CITIES: City[] = [
   { rank: 247, name: "Roma" },
   { rank: 248, name: "Pleasanton" },
   { rank: 249, name: "Four Corners" },
-  { rank: 250, name: "Leon Valley" }
+  { rank: 250, name: "Leon Valley" },
   { rank: 251, name: "Rockport" },
   { rank: 252, name: "Roanoke" },
   { rank: 253, name: "Burkburnett" },
