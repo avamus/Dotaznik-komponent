@@ -1,9 +1,10 @@
+// src/app/api/campaign/route.ts
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const data = await req.json()
+    const data = await request.json()
 
     const campaign = await prisma.campaign.create({
       data: {
@@ -41,9 +42,9 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(req.url)
+    const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId')
 
     const campaigns = await prisma.campaign.findMany({
