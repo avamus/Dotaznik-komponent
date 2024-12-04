@@ -29,6 +29,10 @@ export async function POST(request: Request) {
             code
           })) || []
         }
+      },
+      include: {
+        states: true,
+        zipCodes: true
       }
     })
 
