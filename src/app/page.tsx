@@ -20,6 +20,9 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useLeadForm } from '@/hooks/useLeadForm'
+import { ErrorMessage } from '@/components/ui/error-message'
+import LeadsPerDaySlider from '@/components/LeadsPerDaySlider'
 import Image from "next/image"
 
 const US_STATES: string[] = [
@@ -51,8 +54,7 @@ export default function Home() {
     isSubmitting
   } = useLeadForm();
 
-  const getError = (field: string) => 
-    errors.find(error => error.field === field)?.message;
+  const getError = (field: string) => errors.find(error => error.field === field)?.message;
 
   return (
     <div className="min-h-screen bg-black p-4 sm:p-6 md:p-8">
@@ -63,7 +65,6 @@ export default function Home() {
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* Personal Information */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName">
@@ -79,7 +80,7 @@ export default function Home() {
                 />
                 <ErrorMessage message={getError('firstName')} />
               </div>
-              
+
               <div>
                 <Label htmlFor="lastName">
                   <span className="text-[#EECC6E]">* </span>Last Name
@@ -118,7 +119,6 @@ export default function Home() {
                 <Input
                   id="phoneNumber"
                   name="phoneNumber"
-                  type="tel"
                   value={formState.phoneNumber}
                   onChange={handleInputChange}
                   className="h-12"
@@ -128,7 +128,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Campaign Name */}
             <div>
               <Label htmlFor="campaignName">
                 <span className="text-[#EECC6E]">* </span>Campaign Name
@@ -144,11 +143,90 @@ export default function Home() {
               <ErrorMessage message={getError('campaignName')} />
             </div>
 
-            {/* Submit Button */}
-            <Button 
-              type="submit" 
-              className="w-full h-14 bg-gradient-to-r from-[#EECC6E] to-[#F7DFA4] text-black font-semibold"
+            <div className="space-y-4">
+              <Label className="text-lg font-bold">
+                <span className="text-[#EECC6E]">* </span>Targeting Type
+              </Label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button
+                  type="button"
+                  onClick={() => handleTargetingChange('national')}
+                  className={`p-6 border-2 rounded-xl transition-colors ${
+                    formState.targetingType === 'national'
+                      ? 'border-[#EECC6E] bg-[#EECC6E]/10'
+                      : 'border-[#EECC6E]/20 hover:border-[#EECC6E]/50'
+                  }`}
+                >
+                  <Map className="h-8 w-8 text-[#EECC6E] mb-4" />
+                  <h3 className="text-[#EECC6E] text-lg font-bold mb-2">National</h3>
+                  <p className="text-sm text-[#EECC6E]/70">Target entire United States</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleTargetingChange('state')}
+                  className={`p-6 border-2 rounded-xl transition-colors ${
+                    formState.targetingType === 'state'
+                      ? 'border-[#EECC6E] bg-[#EECC6E]/10'
+                      : 'border-[#EECC6E]/20 hover:border-[#EECC6E]/50'
+                  }`}
+                >
+                  <Building2 className="h-8 w-8 text-[#EECC6E] mb-4" />
+                  <h3 className="text-[#EECC6E] text-lg font-bold mb-2">States</h3>
+                  <p className="text-sm text-[#EECC6E]/70">Select specific states</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleTargetingChange('zipCode')}
+                  className={`p-6 border-2 rounded-xl transition-colors ${
+                    formState.targetingType === 'zipCode'
+                      ? 'border-[#EECC6E] bg-[#EECC6E]/10'
+                      : 'border-[#EECC6E]/20 hover:border-[#EECC6E]/50'
+                  }`}
+                >
+                  <MapPin className="h-8 w-8 text-[#EECC6E] mb-4" />
+                  <h3 className="text-[#EECC6E] text-lg font-bold mb-2">ZIP Codes</h3>
+                  <p className="text-sm text-[#EECC6E]/70">Target specific ZIP codes</p>
+                </button>
+              </div>
+            </div>
+
+            {formState.targetingType === 'state' && (
+              <div className="space-y-4">
+                <Label>
+                  <span className="text-[#EECC6E]">* </span>Select States
+                </Label>
+                <Select onValueChange={handleStateChange}>
+                  <SelectTrigger className="w-full h-12 bg-black/50 border-[#EECC6E]/20">
+                    <SelectValue placeholder="Select states (max 5)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <ScrollArea className="h-[200px]">
+                      {US_STATES.map(state => (
+                        <SelectItem
+                          key={state}
+                          value={state}
+                          disabled={formState.selectedStates.length >= 5 && !formState.selectedStates.includes(state)}
+                        >
+                          {state}
+                        </SelectItem>
+                      ))}
+                    </ScrollArea>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <LeadsPerDaySlider
+              value={formState.leadsPerDay}
+              onChange={handleLeadsPerDayChange}
+            />
+
+            <Button
+              type="submit"
               disabled={isSubmitting}
+              className="w-full h-14 bg-gradient-to-r from-[#EECC6E] to-[#F7DFA4] text-black font-bold"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Form'}
             </Button>
