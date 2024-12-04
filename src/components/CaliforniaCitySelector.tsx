@@ -207,7 +207,7 @@ const CALIFORNIA_CITIES: City[] = [
   { rank: 197, name: "Poway" },
   { rank: 198, name: "Azusa" },
   { rank: 199, name: "Rowland Heights" },
-  { rank: 200, name: "Newark" }
+  { rank: 200, name: "Newark" },
   { rank: 201, name: "Oakley" },
   { rank: 202, name: "Cerritos" },
   { rank: 203, name: "Vineyard" },
