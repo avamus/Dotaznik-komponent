@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Campaign {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String
+  firstName     String
+  lastName      String
+  email         String
+  phoneNumber   String
+  campaignName  String
+  targetingType String
+  states        State[]
+  zipCodes      ZipCode[]
+  leadsPerDay   Int
+  googleSheetUrl String
+  webhookUrl    String?
+  status        String    @default("active")
+  leads         Lead[]
+}
+
+model State {
+  id         String    @id @default(cuid())
+  name       String
+  cities     String[]
+  campaignId String
+  campaign   Campaign  @relation(fields: [campaignId], references: [id])
+}
+
+model ZipCode {
+  id         String    @id @default(cuid())
+  code       String
+  campaignId String
+  campaign   Campaign  @relation(fields: [campaignId], references: [id])
+}
+
+model Lead {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  campaignId String
+  campaign   Campaign  @relation(fields: [campaignId], references: [id])
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  address    String?
+  city       String?
+  state      String?
+  zipCode    String?
+  status     String    @default("new")
+}
