@@ -157,7 +157,7 @@ const TEXAS_CITIES: City[] = [
   { rank: 147, name: "Fresno" },
   { rank: 148, name: "Kingsville" },
   { rank: 149, name: "Benbrook" },
-  { rank: 150, name: "Corinth" }
+  { rank: 150, name: "Corinth" },
   { rank: 151, name: "Pecan Grove" },
   { rank: 152, name: "Boerne" },
   { rank: 153, name: "Terrell" },
