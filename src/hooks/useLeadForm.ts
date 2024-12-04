@@ -1,7 +1,7 @@
+// src/hooks/useLeadForm.ts
 import { useState } from 'react';
-import { validateForm, ValidationError } from '@/lib/validation';
 
-export interface FormState {
+interface FormState {
   firstName: string;
   lastName: string;
   email: string;
@@ -14,6 +14,11 @@ export interface FormState {
   leadsPerDay: number;
   googleSheetUrl: string;
   webhookUrl: string;
+}
+
+interface ValidationError {
+  field: string;
+  message: string;
 }
 
 const initialFormState: FormState = {
@@ -35,12 +40,10 @@ export const useLeadForm = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormState(prev => ({ ...prev, [name]: value }));
-    // Clear error for this field if it exists
     setErrors(prev => prev.filter(error => error.field !== name));
   };
 
@@ -60,9 +63,7 @@ export const useLeadForm = () => {
         return {
           ...prev,
           selectedStates: prev.selectedStates.filter(s => s !== state),
-          selectedCities: prev.selectedCities.filter(city => 
-            !city.startsWith(`${state} City`)
-          )
+          selectedCities: []
         };
       } else if (prev.selectedStates.length < 5) {
         return {
@@ -117,59 +118,31 @@ export const useLeadForm = () => {
     }));
   };
 
-  const handleZipCodePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData('text');
-    const zipCodes = pastedText
-      .replace(/[^0-9\n,\s]/g, '')
-      .split(/[\n,\s]+/)
-      .filter(code => /^\d{5}$/.test(code))
-      .slice(0, 50);
-    
-    setFormState(prev => ({ ...prev, zipCodes }));
-  };
-
   const handleLeadsPerDayChange = (value: number) => {
     setFormState(prev => ({ ...prev, leadsPerDay: value }));
   };
 
-  const resetForm = () => {
-    setFormState(initialFormState);
-    setErrors([]);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const validationErrors = validateForm(formState);
-    setErrors(validationErrors);
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/campaign', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
 
-    if (validationErrors.length === 0) {
-      setIsSubmitting(true);
-      try {
-        const response = await fetch('/api/campaign', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formState),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to submit form');
-        }
-
-        const data = await response.json();
-        resetForm();
-        setShowSuccessDialog(true);
-      } catch (error) {
-        console.error('Form submission error:', error);
-        setErrors([{ 
-          field: 'submit', 
-          message: 'Failed to submit form. Please try again.' 
-        }]);
-      } finally {
-        setIsSubmitting(false);
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
       }
+
+      setFormState(initialFormState);
+    } catch (error) {
+      setErrors([{ field: 'submit', message: 'Failed to submit form' }]);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -177,8 +150,6 @@ export const useLeadForm = () => {
     formState,
     errors,
     isSubmitting,
-    showSuccessDialog,
-    setShowSuccessDialog,
     handleInputChange,
     handleTargetingChange,
     handleStateChange,
@@ -186,9 +157,7 @@ export const useLeadForm = () => {
     handleZipCodeChange,
     handleZipCodeAdd,
     handleZipCodeRemove,
-    handleZipCodePaste,
     handleLeadsPerDayChange,
-    handleSubmit,
-    resetForm
+    handleSubmit
   };
 };
