@@ -57,7 +57,7 @@ const TEXAS_CITIES: City[] = [
   { rank: 47, name: "Atascocita" },
   { rank: 48, name: "Bryan" },
   { rank: 49, name: "Mission" },
-  { rank: 50, name: "Leander" }
+  { rank: 50, name: "Leander" },
   { rank: 51, name: "Longview" },
   { rank: 52, name: "Baytown" },
   { rank: 53, name: "Pharr" },
