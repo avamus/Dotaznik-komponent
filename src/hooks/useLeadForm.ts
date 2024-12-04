@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { validateForm, ValidationError } from '@/lib/validation';
 
-interface FormState {
+export interface FormState {
   firstName: string;
   lastName: string;
   email: string;
@@ -14,21 +14,6 @@ interface FormState {
   leadsPerDay: number;
   googleSheetUrl: string;
   webhookUrl: string;
-}
-
-interface UseLeadFormReturn {
-  formState: FormState;
-  errors: ValidationError[];
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleTargetingChange: (type: 'national' | 'state' | 'zipCode') => void;
-  handleStateChange: (state: string) => void;
-  handleCityChange: (city: string) => void;
-  handleZipCodeChange: (index: number, value: string) => void;
-  handleZipCodeAdd: () => void;
-  handleZipCodeRemove: (index: number) => void;
-  handleLeadsPerDayChange: (value: number) => void;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
-  isSubmitting: boolean;
 }
 
 const initialFormState: FormState = {
@@ -46,10 +31,11 @@ const initialFormState: FormState = {
   webhookUrl: ''
 };
 
-export const useLeadForm = (): UseLeadFormReturn => {
+export const useLeadForm = () => {
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -70,28 +56,39 @@ export const useLeadForm = (): UseLeadFormReturn => {
 
   const handleStateChange = (state: string) => {
     setFormState(prev => {
-      const newSelectedStates = prev.selectedStates.includes(state)
-        ? prev.selectedStates.filter(s => s !== state)
-        : [...prev.selectedStates, state].slice(0, 5);
-      
-      return {
-        ...prev,
-        selectedStates: newSelectedStates,
-        selectedCities: []
-      };
+      if (prev.selectedStates.includes(state)) {
+        return {
+          ...prev,
+          selectedStates: prev.selectedStates.filter(s => s !== state),
+          selectedCities: prev.selectedCities.filter(city => 
+            !city.startsWith(`${state} City`)
+          )
+        };
+      } else if (prev.selectedStates.length < 5) {
+        return {
+          ...prev,
+          selectedStates: [...prev.selectedStates, state],
+          selectedCities: []
+        };
+      }
+      return prev;
     });
   };
 
   const handleCityChange = (city: string) => {
     setFormState(prev => {
-      const newSelectedCities = prev.selectedCities.includes(city)
-        ? prev.selectedCities.filter(c => c !== city)
-        : [...prev.selectedCities, city].slice(0, 10);
-      
-      return {
-        ...prev,
-        selectedCities: newSelectedCities
-      };
+      if (prev.selectedCities.includes(city)) {
+        return {
+          ...prev,
+          selectedCities: prev.selectedCities.filter(c => c !== city)
+        };
+      } else if (prev.selectedCities.length < 10) {
+        return {
+          ...prev,
+          selectedCities: [...prev.selectedCities, city]
+        };
+      }
+      return prev;
     });
   };
 
@@ -105,10 +102,12 @@ export const useLeadForm = (): UseLeadFormReturn => {
   };
 
   const handleZipCodeAdd = () => {
-    setFormState(prev => ({
-      ...prev,
-      zipCodes: [...prev.zipCodes, '']
-    }));
+    if (formState.zipCodes.length < 50) {
+      setFormState(prev => ({
+        ...prev,
+        zipCodes: [...prev.zipCodes, '']
+      }));
+    }
   };
 
   const handleZipCodeRemove = (index: number) => {
@@ -118,8 +117,25 @@ export const useLeadForm = (): UseLeadFormReturn => {
     }));
   };
 
+  const handleZipCodePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text');
+    const zipCodes = pastedText
+      .replace(/[^0-9\n,\s]/g, '')
+      .split(/[\n,\s]+/)
+      .filter(code => /^\d{5}$/.test(code))
+      .slice(0, 50);
+    
+    setFormState(prev => ({ ...prev, zipCodes }));
+  };
+
   const handleLeadsPerDayChange = (value: number) => {
     setFormState(prev => ({ ...prev, leadsPerDay: value }));
+  };
+
+  const resetForm = () => {
+    setFormState(initialFormState);
+    setErrors([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -130,10 +146,27 @@ export const useLeadForm = (): UseLeadFormReturn => {
     if (validationErrors.length === 0) {
       setIsSubmitting(true);
       try {
-        // Add your API call here
-        console.log('Form submitted:', formState);
+        const response = await fetch('/api/campaign', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formState),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit form');
+        }
+
+        const data = await response.json();
+        resetForm();
+        setShowSuccessDialog(true);
       } catch (error) {
         console.error('Form submission error:', error);
+        setErrors([{ 
+          field: 'submit', 
+          message: 'Failed to submit form. Please try again.' 
+        }]);
       } finally {
         setIsSubmitting(false);
       }
@@ -143,6 +176,9 @@ export const useLeadForm = (): UseLeadFormReturn => {
   return {
     formState,
     errors,
+    isSubmitting,
+    showSuccessDialog,
+    setShowSuccessDialog,
     handleInputChange,
     handleTargetingChange,
     handleStateChange,
@@ -150,8 +186,9 @@ export const useLeadForm = (): UseLeadFormReturn => {
     handleZipCodeChange,
     handleZipCodeAdd,
     handleZipCodeRemove,
+    handleZipCodePaste,
     handleLeadsPerDayChange,
     handleSubmit,
-    isSubmitting
+    resetForm
   };
 };
