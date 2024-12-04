@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client"
 
 import React from 'react'
@@ -5,21 +6,34 @@ import { Map, Building2, MapPin, X, Check, Sparkles, ChevronLeft, ChevronRight }
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useLeadForm } from '@/hooks/useLeadForm'
-import ErrorMessage from '@/components/ui/error-message'
-import LoadingButton from '@/components/ui/loading-button'
-import StateSelector from '@/components/StateSelector'
-import CitySelector from '@/components/CitySelector'
-import ZipCodeInput from '@/components/ZipCodeInput'
-import LeadsPerDaySlider from '@/components/LeadsPerDaySlider'
 import Image from "next/image"
 
-const US_STATES = [/* ...your states array... */]
+const US_STATES: string[] = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+  "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+  "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+  "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+  "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+  "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+  "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+  "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+  "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+  "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+];
 
 export default function Home() {
   const {
@@ -80,57 +94,67 @@ export default function Home() {
                 />
                 <ErrorMessage message={getError('lastName')} />
               </div>
-              
-              {/* Add more form fields following the same pattern */}
-            </div>
 
-            {/* Targeting Section */}
-            <div className="space-y-4">
-              <Label className="text-xl font-bold">
-                <span className="text-[#EECC6E]">* </span>Targeting Options
-              </Label>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {/* Add targeting buttons */}
+              <div>
+                <Label htmlFor="email">
+                  <span className="text-[#EECC6E]">* </span>Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formState.email}
+                  onChange={handleInputChange}
+                  className="h-12"
+                  placeholder="john@example.com"
+                />
+                <ErrorMessage message={getError('email')} />
               </div>
 
-              {formState.targetingType === 'state' && (
-                <StateSelector
-                  selectedStates={formState.selectedStates}
-                  onStateChange={handleStateChange}
-                  onStateRemove={handleStateChange}
-                  availableStates={US_STATES}
+              <div>
+                <Label htmlFor="phoneNumber">
+                  <span className="text-[#EECC6E]">* </span>Phone Number
+                </Label>
+                <Input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
+                  value={formState.phoneNumber}
+                  onChange={handleInputChange}
+                  className="h-12"
+                  placeholder="(555) 123-4567"
                 />
-              )}
-
-              {formState.targetingType === 'zipCode' && (
-                <ZipCodeInput
-                  zipCodes={formState.zipCodes}
-                  onChange={handleZipCodeChange}
-                  onAdd={handleZipCodeAdd}
-                  onRemove={handleZipCodeRemove}
-                  onPaste={() => {}} // Add paste handler
-                />
-              )}
+                <ErrorMessage message={getError('phoneNumber')} />
+              </div>
             </div>
 
-            {/* Leads Per Day Slider */}
-            <LeadsPerDaySlider
-              value={formState.leadsPerDay}
-              onChange={handleLeadsPerDayChange}
-            />
+            {/* Campaign Name */}
+            <div>
+              <Label htmlFor="campaignName">
+                <span className="text-[#EECC6E]">* </span>Campaign Name
+              </Label>
+              <Input
+                id="campaignName"
+                name="campaignName"
+                value={formState.campaignName}
+                onChange={handleInputChange}
+                className="h-12"
+                placeholder="My Campaign"
+              />
+              <ErrorMessage message={getError('campaignName')} />
+            </div>
 
             {/* Submit Button */}
-            <LoadingButton
-              type="submit"
-              loading={isSubmitting}
-              className="w-full h-14 bg-gradient-to-r from-[#EECC6E] to-[#F7DFA4]"
+            <Button 
+              type="submit" 
+              className="w-full h-14 bg-gradient-to-r from-[#EECC6E] to-[#F7DFA4] text-black font-semibold"
+              disabled={isSubmitting}
             >
-              Order Now
-            </LoadingButton>
+              {isSubmitting ? 'Submitting...' : 'Submit Form'}
+            </Button>
           </CardContent>
         </Card>
       </form>
     </div>
-  )
+  );
 }
