@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useLeadForm } from '@/hooks/useLeadForm'
-import { ErrorMessage } from '@/components/ui/error-message'
+import ErrorMessage from '@/components/ui/error-message'
 import LeadsPerDaySlider from '@/components/LeadsPerDaySlider'
 import Image from "next/image"
 
