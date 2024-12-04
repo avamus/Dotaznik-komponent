@@ -307,7 +307,7 @@ const CALIFORNIA_CITIES: City[] = [
   { rank: 297, name: "West Whittier-Los Nietos" },
   { rank: 298, name: "El Cerrito" },
   { rank: 299, name: "Norco" },
-  { rank: 300, name: "Imperial Beach" }
+  { rank: 300, name: "Imperial Beach" },
   { rank: 301, name: "South Pasadena" },
   { rank: 302, name: "Loma Linda" },
   { rank: 303, name: "North Tustin" },
@@ -407,7 +407,7 @@ const CALIFORNIA_CITIES: City[] = [
   { rank: 397, name: "El Sobrante" },
   { rank: 398, name: "Ukiah" },
   { rank: 399, name: "Coto Caza" },
-  { rank: 400, name: "Los Osos" }
+  { rank: 400, name: "Los Osos" },
   { rank: 401, name: "Discovery Bay" },
   { rank: 402, name: "Cherryland" },
   { rank: 403, name: "Artesia" },
@@ -507,7 +507,7 @@ const CALIFORNIA_CITIES: City[] = [
   { rank: 497, name: "Golden Hills" },
   { rank: 498, name: "Garden Acres" },
   { rank: 499, name: "Quartz Hill" },
-  { rank: 500, name: "Madera Acres" }
+  { rank: 500, name: "Madera Acres" },
   { rank: 501, name: "La Cresta" },
   { rank: 502, name: "Mentone" },
   { rank: 503, name: "Corte Madera" },
