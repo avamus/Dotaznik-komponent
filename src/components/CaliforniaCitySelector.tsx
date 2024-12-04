@@ -107,7 +107,7 @@ const CALIFORNIA_CITIES: City[] = [
   { rank: 97, name: "Santa Barbara" },
   { rank: 98, name: "San Ramon" },
   { rank: 99, name: "San Leandro" },
-  { rank: 100, name: "Rancho Cordova" }
+  { rank: 100, name: "Rancho Cordova" },
   { rank: 101, name: "Whittier" },
   { rank: 102, name: "Hawthorne" },
   { rank: 103, name: "Newport Beach" },
