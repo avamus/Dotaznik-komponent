@@ -224,10 +224,12 @@ export default function Home() {
     <span className="text-[#EECC6E]">* </span>Leads per Day
   </Label>
   <div className="bg-black/50 border-2 border-[#EECC6E]/20 rounded-xl p-6">
-    <LeadsPerDaySlider
-      value={formState.leadsPerDay}
-      onChange={handleLeadsPerDayChange}
-    />
+    <LeadsCalculator
+  totalLeads={formState.totalLeads}
+  leadsPerDay={formState.leadsPerDay}
+  onTotalLeadsChange={handleTotalLeadsChange}
+  onLeadsPerDayChange={handleLeadsPerDayChange}
+/>
   </div>
 </div>
 
