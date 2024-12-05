@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog"
 import { useLeadForm } from '@/hooks/useLeadForm'
 import ErrorMessage from '@/components/ui/error-message'
-import LeadsPerDaySlider from '@/components/LeadsPerDaySlider'
+import LeadsCalculator from '@/components/LeadsCalculator'
 import Image from "next/image"
 
 const US_STATES: string[] = [
@@ -50,6 +50,7 @@ export default function Home() {
     handleZipCodeAdd,
     handleZipCodeRemove,
     handleLeadsPerDayChange,
+    handleTotalLeadsChange,
     handleSubmit,
     isSubmitting
   } = useLeadForm();
