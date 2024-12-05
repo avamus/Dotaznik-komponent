@@ -15,6 +15,8 @@ interface FormState {
   leadsPerDay: number;
   googleSheetUrl: string;
   webhookUrl: string;
+  totalPrice?: number;  // Add this
+  deliveryDays?: number;  // Add this
 }
 
 interface ValidationError {
