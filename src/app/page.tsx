@@ -218,10 +218,17 @@ export default function Home() {
               </div>
             )}
 
-            <LeadsPerDaySlider
-              value={formState.leadsPerDay}
-              onChange={handleLeadsPerDayChange}
-            />
+            <div className="space-y-4">
+  <Label className="text-lg font-bold">
+    <span className="text-[#EECC6E]">* </span>Leads per Day
+  </Label>
+  <div className="bg-black/50 border-2 border-[#EECC6E]/20 rounded-xl p-6">
+    <LeadsPerDaySlider
+      value={formState.leadsPerDay}
+      onChange={handleLeadsPerDayChange}
+    />
+  </div>
+</div>
 
             <Button
               type="submit"
